@@ -1,10 +1,23 @@
 const express = require('express')
-const { update } = require('../models/user')
 const User = require('../models/user')
-const router = new express.Router()
 const userEndpoint = '/users'
 const auth = require('../middleware/auth')
+const multer = require('multer')
+const sharp = require('sharp')
+const router = new express.Router()
 
+
+const upload = multer({
+    limits: {
+        fileSize: 1000000
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(jpg|png|jpeg)$/)) {
+            return cb(new Error('File type not supported. Suppored File types: .jpg, .jpeg, .png'))
+        }
+        cb(undefined, true)
+    }
+})
 /**
  * Signup route for creating a user
  */
@@ -26,6 +39,39 @@ router.get(userEndpoint+'/profile', auth ,async (req, res) => {
     res.send(req.user)
 })
 
+/**
+ * Allows user to upload a profile picture
+ */
+router.post(userEndpoint+'/profile/avatar',auth, upload.single('avatar'), async (req, res) => {
+    const buffer = await sharp(req.file.buffer).resize({width: 250, height: 250}).png().toBuffer()
+
+    req.user.avatar = buffer
+    await req.user.save()
+    res.send()
+}, (error, req, res, next) => {
+    res.status(400).send({error: error.message})
+})
+
+/**
+ * Allows user to delete their profile picture
+ */
+router.delete(userEndpoint+'/profile/avatar', auth, async (req, res) => {
+    req.user.avatar = undefined
+    await req.user.save()
+    res.send()
+})
+
+/**
+ * Allows user to get their profile picture
+ */
+router.get(userEndpoint+'/profile/avatar', auth, async (req, res) => {
+    if (!req.user.avatar) {
+        res.status(400).send({error: 'You do not have a avatar linked to your profile picture'})
+    }
+
+    res.set('Content-Type', 'image/png')
+    res.send(req.user.avatar)
+})
 /**
  * Updates currently logged in user
  */

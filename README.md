@@ -1,24 +1,27 @@
 # Task manager API
 
-A simple task management api created use Node.js with a MongoDB backend.
+Task management API created using Node.js and connected to a MongoDB database. The project includes full custom authorization, and makes use of jwtTokens
+to keep track of user sessions as well as authentication to ensure that tasks are only able to be accessed by the user that created them.
 
-## Prerequisites
+CRUD operations are fully available for both the task and user items.
 
-The following is required to run the program locally:
+## Tech stack
 
-* [npm](https://www.npmjs.com/)
-* [Node.js](https://nodejs.org/en/)
-* [MongoDB](https://www.mongodb.com/)
+- Node.js
+- MongoDB
+- Jest
+
+## Packages and external services
+
+- [Express](https://expressjs.com//)
+- [Mongoose](https://mongoosejs.com/)
 
 ## How to run
 
-Once all of the prerequisites have been installed, the following indicates how to run the program:
+Before you attempt to run the application, ensure you have Node.js installed as well as MongoDB with a instance of MongoDB-server running
 
 * Clone the project: `git clone git@github.com:Almano98/task-manager-api.git`
-* Start your MongoDB server.
-* npm i - Install npm modules used within the project
-* npm run dev - start up the api.
+* Install project dependencies: `npm install`
+* Start the application: `npm run start`
 
-The program will then live on localhost:3000/127.0.0.1:3000.
-
-The port 3000 is default unless the environment variable port is set to something else.
+The task manager application will be live on localhost:3000, and can be easily interacted with by using API platforms such as [Postman](https://www.postman.com/).
